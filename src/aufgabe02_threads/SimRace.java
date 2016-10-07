@@ -6,12 +6,27 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Lucas Anders, Lydia Pflug
+ * @date 07.10.2016
+ * Die Klasse simuliert ein Autorennen.
+ */
+
 public class SimRace {
 	
 	private static int anzahlRunden;
 	private int anzahlAutos;
 	private ArrayList<Car> autoTeilnehmer;
 	
+	
+	/**
+	 * main() Methode startet das Rennen und ruft die hierfuer
+	 * notwendigen Methoden auf.
+	 * 
+	 * @param args
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 		SimRace sr = new SimRace();
 		sr.rennenVorbereiten();
@@ -31,9 +46,14 @@ public class SimRace {
 			sr.ergebnisAusgeben();
 		}
 		
-		
 	}
 	
+	/**
+	 * Die Methode fragt fuer das Rennen die teilnehmenden Autos ab
+	 * und die Anzahl der zu fahrenden Runden. 
+	 * 
+	 * @throws IOException
+	 */
 	private void rennenVorbereiten() throws IOException {
 		
 	    InputStreamReader isr = new InputStreamReader(System.in);
@@ -57,7 +77,11 @@ public class SimRace {
 		this.anzahlRunden = Integer.parseInt(anzahlRunden);
 		
 	}
-
+	
+	/**
+	 * Die Methode startet das Rennen und erzeugt entsprechend
+	 * viele Autos bzw. Threads und startet diese.
+	 */
 	private void rennenBeginnen() {
 		
 		int i = 1;
@@ -72,6 +96,12 @@ public class SimRace {
 		
 	}
 
+	/**
+	 * Methode prueft, ob Rennen beendet worden ist.
+	 * 
+	 * @return true, wenn das Rennen beendet worden ist
+	 * und alle Autos Ihre Runden beendet haben.
+	 */
 	private boolean rennenBeendet() {
 		
 		boolean beendet = true;
@@ -86,6 +116,10 @@ public class SimRace {
 		
 	}
 
+	/**
+	 * Methode sortiert die teilnehmenden Autos nach ihrer gefahrenen Zeit 
+	 * und gibt die Rangfolge auf der Konsole aus.
+	 */
 	private void ergebnisAusgeben() {
 				
 		Collections.sort(autoTeilnehmer, (auto1,auto2) -> auto2.compareTo(auto1));
@@ -97,9 +131,14 @@ public class SimRace {
 			System.out.println((j+1) + ". Platz: \t Auto " + autoTeilnehmer.get(j).getStartNummer() + " \t Zeit: " + autoTeilnehmer.get(j).getGesamtFahrzeit());
 			
 		}
-		
 	}
-
+	
+	/**
+	 * Methode prueft Eingabe, ob nur Zahlen eingegeben worden sind. 
+	 * 
+	 * @param eingabe
+	 * @return true, wenn die Eingabe korrekt ist.
+	 */
 	private boolean eingabePruefen(String eingabe) {
 		return eingabe.matches("^[0-9]+");
 	}
