@@ -10,34 +10,50 @@ import java.util.Random;
 
 public class Accident extends Thread {
 
-	static boolean unfall = false;
-	
-	
+	boolean unfall = false;
 	
 	/**
 	 * Methode gibt Wert von unfall zurueck.
 	 * @return true, wenn ein Unfall vorhanden ist, ansonsten false
 	 */
-	public static boolean unfallVorhanden() {
+	public boolean unfallVorhanden() {
 		
 		return unfall;
 		
 	}
 	
 	/**
-	 * Methode generiert nach einer zufaelligen Zeit einen Unfall und
+	 * Methode generiert nach einer zufaelligen Zahl einen Unfall und
 	 * setzt den Boolean false auf true.
 	 * @throws InterruptedException
 	 */
-	public static void unfallGenerieren() throws InterruptedException {
+	public void unfallGenerieren(int zahl) throws InterruptedException {
 		
-		Random random = new Random();
+		if (zahl == 42) {
+			unfall = true;
+		}
 		
-		Thread.sleep(random.nextInt(10000-1) + 1);
+	}
+	
+	@Override
+	public void run() {
+	
+		boolean unterbrechen = true;
 		
-		// TODO pruefen, wie Unfall nicht immer ausgefuehrt wird
-		unfall = false;
+		while(unterbrechen && !unfall) {
+			Random random = new Random();
+			try {
+				if(!isInterrupted()) {
+					unfallGenerieren(random.nextInt((100000000 -1) + 1));
+				} else {
+					unterbrechen = false;
+				}
+			} catch (InterruptedException e) {
 		
+				e.printStackTrace();
+			}
+		}
+	
 	}
 	
 	

@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class SimRace {
 	
-	private static int anzahlRunden;
+	private int anzahlRunden;
 	private int anzahlAutos;
 	private ArrayList<Car> autoTeilnehmer;
 	
@@ -29,23 +29,41 @@ public class SimRace {
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 		SimRace sr = new SimRace();
+		Accident unfall = new Accident();
 		sr.rennenVorbereiten();
 		sr.rennenBeginnen();
+
+		unfall.start();
 		
-		Accident.unfallGenerieren();
+		// warten bis Unfall passiert oder Rennen beendet wird
+		while (!sr.rennenBeendet() && !unfall.unfallVorhanden()) {
+
+		}
 		
-//		while (!sr.rennenBeendet() && !Accident.unfallVorhanden()) {
-//			// warten bis beendet
-//		}
-		
-		Thread.sleep(100 * anzahlRunden);
-		
-		if (Accident.unfallVorhanden()) {
-			System.out.println("Das Rennen wurde wegen eines Unfalls abgebrochen.");
+		if (unfall.unfallVorhanden()) {
+			for (Car auto : sr.autoTeilnehmer) {
+				auto.interrupt();
+			}
+			System.err.println("Das Rennen wurde wegen eines Unfalls abgebrochen.");
 		} else {
+			unfall.interrupt();
 			sr.ergebnisAusgeben();
 		}
 		
+	}
+	
+	/**
+	 * Methode prueft, ob Rennen beendet worden ist.
+	 * 
+	 * @return true, wenn das Rennen beendet worden ist
+	 * und alle Autos Ihre Runden beendet haben.
+	 * @throws InterruptedException
+	 */
+	private boolean rennenBeendet() throws InterruptedException {
+		for (int i = 0; i < autoTeilnehmer.size(); i++) {
+			autoTeilnehmer.get(i).join();
+		}
+		return true;
 	}
 	
 	/**
@@ -88,31 +106,11 @@ public class SimRace {
 		autoTeilnehmer = new ArrayList<>();
 		
 		while (i <= anzahlAutos) {
-			Car auto = new Car(i,anzahlRunden);
+			Car auto = new Car(i,this.anzahlRunden);
 			autoTeilnehmer.add(auto);
 			auto.start();
 			++i;
 		}
-		
-	}
-
-	/**
-	 * Methode prueft, ob Rennen beendet worden ist.
-	 * 
-	 * @return true, wenn das Rennen beendet worden ist
-	 * und alle Autos Ihre Runden beendet haben.
-	 */
-	private boolean rennenBeendet() {
-		
-		boolean beendet = true;
-		
-		for(Car auto : autoTeilnehmer) {
-			if (!auto.isInterrupted()) {
-				beendet = false;
-			}
-		}
-		
-		return beendet;
 		
 	}
 

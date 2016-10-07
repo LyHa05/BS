@@ -13,7 +13,6 @@ public class Car extends Thread {
 	private int startNummer;
 	private int gesamtFahrzeit;
 	private int anzahlZuFahrendeRunden;
-	private boolean rennenBeendet = false;
 	
 	public Car(int nummer, int runden) {
 		this.startNummer = nummer;
@@ -27,22 +26,23 @@ public class Car extends Thread {
 	 * auf true.
 	 * @see java.lang.Thread#run()
 	 */
+	@Override
 	public void run() {
 		try {
-			
+			//Runden fahren
 			int i = 1;
 			while (i <= anzahlZuFahrendeRunden) {
-				rundeFahren();
+				
+				//Pruefen, ob sich Unfall ereignet hat
+				if (!isInterrupted()) {
+					rundeFahren();
+				}
+				
 				++i;
+				
 			}
 			
-			rennenBeendet = true;
-			boolean inter = Thread.currentThread().interrupted();
-			
-			System.out.println("interrupt: " + inter);
-			
 		} catch (InterruptedException e) {
-			System.err.println("Eine InterruptedException!");
 			e.printStackTrace();
 		}
 	}
@@ -56,7 +56,6 @@ public class Car extends Thread {
 	private void rundeFahren() throws InterruptedException {
 		Random random = new Random();
 		int rundenZeit = random.nextInt(100 - 1) + 1;
-		// TODO Car oder Thread fuer Aufruf verwenden?
 		Thread.sleep(rundenZeit);
 		gesamtFahrzeit = gesamtFahrzeit + rundenZeit;
 	}
@@ -69,15 +68,7 @@ public class Car extends Thread {
 	protected int getGesamtFahrzeit() {
 		return gesamtFahrzeit;
 	}
-	
-	/**
-	 * Methode gibt Wert von rennenBeendet zurueck.
-	 * @return true, wenn Rennen zu Ende ist, ansonsten false
-	 */
-	private boolean getRennenBeendet() {
-		return rennenBeendet;
-	}
-	
+		
 	/**
 	 * Methode gibt Wert von startNummer zurueck.
 	 * @return int der Instanzvariable startNummer
