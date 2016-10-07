@@ -17,13 +17,21 @@ public class SimRace {
 		sr.rennenVorbereiten();
 		sr.rennenBeginnen();
 		
-//		while (!sr.rennenBeendet()) {
+		Accident.unfallGenerieren();
+		
+//		while (!sr.rennenBeendet() && !Accident.unfallVorhanden()) {
 //			// warten bis beendet
 //		}
 		
 		Thread.sleep(100 * anzahlRunden);
 		
-		sr.ergebnisAusgeben();
+		if (Accident.unfallVorhanden()) {
+			System.out.println("Das Rennen wurde wegen eines Unfalls abgebrochen.");
+		} else {
+			sr.ergebnisAusgeben();
+		}
+		
+		
 	}
 	
 	private void rennenVorbereiten() throws IOException {
